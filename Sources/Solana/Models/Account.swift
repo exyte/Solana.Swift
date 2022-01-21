@@ -70,7 +70,7 @@ public struct Account: Codable, Hashable {
 }
 
 public extension Account {
-    struct Meta: Decodable, CustomDebugStringConvertible {
+    public struct Meta: Decodable, CustomDebugStringConvertible {
         public let publicKey: PublicKey
         public var isSigner: Bool
         public var isWritable: Bool

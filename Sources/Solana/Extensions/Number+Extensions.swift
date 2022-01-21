@@ -1,14 +1,14 @@
 import Foundation
 
 extension UInt32 {
-    var bytes: [UInt8] {
+    public var bytes: [UInt8] {
         var littleEndian = self.littleEndian
         return withUnsafeBytes(of: &littleEndian) { Array($0) }
     }
 }
 
 extension UInt64 {
-    var bytes: [UInt8] {
+    public var bytes: [UInt8] {
         var littleEndian = self.littleEndian
         return withUnsafeBytes(of: &littleEndian) { Array($0) }
     }
