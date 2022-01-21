@@ -1,14 +1,14 @@
 import Foundation
 import TweetNacl
 
-struct Transaction {
+public struct Transaction {
     private var signatures = [Signature]()
-    let feePayer: PublicKey
-    var instructions = [TransactionInstruction]()
-    let recentBlockhash: String
+    public let feePayer: PublicKey
+    public var instructions = [TransactionInstruction]()
+    public let recentBlockhash: String
     //        TODO: nonceInfo
 
-    init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
+    public init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
         self.signatures = signatures
         self.feePayer = feePayer
         self.instructions = instructions
@@ -16,7 +16,7 @@ struct Transaction {
     }
 
     // MARK: - Methods
-    mutating func sign(signers: [Account]) -> Result<Void, Error> {
+    public mutating func sign(signers: [Account]) -> Result<Void, Error> {
         guard signers.count > 0 else {
             return .failure(SolanaError.invalidRequest(reason: "No signers"))
         }
@@ -39,7 +39,7 @@ struct Transaction {
         }
     }
 
-    mutating func serialize(
+    public mutating func serialize(
         requiredAllSignatures: Bool = true,
         verifySignatures: Bool = false
     ) -> Result<Data, Error> {
@@ -52,23 +52,23 @@ struct Transaction {
     }
 
     // MARK: - Helpers
-    mutating func addSignature(_ signature: Signature) -> Result<Void, Error> {
+    public mutating func addSignature(_ signature: Signature) -> Result<Void, Error> {
         return compile() // Ensure signatures array is populated
             .flatMap { _ in return _addSignature(signature) }
     }
 
-    mutating func serializeMessage() -> Result<Data, Error> {
+    public mutating func serializeMessage() -> Result<Data, Error> {
         return compile()
             .flatMap { $0.serialize() }
     }
 
-    mutating func verifySignatures() -> Result<Bool, Error> {
+    public mutating func verifySignatures() -> Result<Bool, Error> {
         return serializeMessage().flatMap {
             _verifySignatures(serializedMessage: $0, requiredAllSignatures: true)
         }
     }
 
-    func findSignature(pubkey: PublicKey) -> Signature? {
+    public func findSignature(pubkey: PublicKey) -> Signature? {
         signatures.first(where: {$0.publicKey == pubkey})
     }
 
@@ -266,7 +266,7 @@ struct Transaction {
 }
 
 extension Transaction {
-    struct Signature {
+    public struct Signature {
         var signature: Data?
         var publicKey: PublicKey
     }
