@@ -2,7 +2,7 @@ import Foundation
 import TweetNacl
 
 public struct Transaction {
-    private var signatures = [Signature]()
+    var signatures = [Signature]()
     public let feePayer: PublicKey
     public var instructions = [TransactionInstruction]()
     public let recentBlockhash: String
@@ -31,7 +31,8 @@ public struct Transaction {
         })
 
         // map signatures
-        signatures = signers.map { Signature(signature: nil, publicKey: $0.publicKey) }
+        signatures.removeAll(where: { $0.signature == nil })
+        signatures.append(contentsOf: signers.map { Signature(signature: nil, publicKey: $0.publicKey) })
 
         // construct message
         return compile().flatMap { message in
