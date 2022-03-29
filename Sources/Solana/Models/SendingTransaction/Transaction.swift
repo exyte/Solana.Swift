@@ -30,10 +30,6 @@ public struct Transaction {
             return uniqueSigners
         })
 
-        // map signatures
-        signatures.removeAll(where: { $0.signature == nil })
-        signatures.append(contentsOf: signers.map { Signature(signature: nil, publicKey: $0.publicKey) })
-
         // construct message
         return compile().flatMap { message in
             return partialSign(message: message, signers: signers)
