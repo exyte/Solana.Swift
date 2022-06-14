@@ -142,11 +142,7 @@ public struct Transaction {
         }
 
         // sort accountMetas, first by signer, then by writable
-        accountMetas.sort { (x, y) -> Bool in
-            if x.isSigner != y.isSigner {return x.isSigner}
-            if x.isWritable != y.isWritable {return x.isWritable}
-            return false
-        }
+        accountMetas.sort()
 
         // filterOut duplicate account metas, keeps writable one
         accountMetas = accountMetas.reduce([Account.Meta](), {result, accountMeta in

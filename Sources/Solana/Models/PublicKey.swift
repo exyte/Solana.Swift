@@ -52,6 +52,12 @@ public extension PublicKey {
     }
 }
 
+extension PublicKey: Comparable {
+    public static func < (lhs: PublicKey, rhs: PublicKey) -> Bool {
+        return lhs.description.lowercased() < rhs.description.lowercased()
+    }
+}
+
 extension PublicKey: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()

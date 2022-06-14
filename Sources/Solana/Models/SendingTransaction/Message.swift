@@ -58,10 +58,7 @@ extension Transaction {
                 // construct data
                 var data = Data(capacity: keyCount.count + accountKeys.count * PublicKey.LENGTH)
                 // sort
-                let signedKeys = accountKeys.filter {$0.isSigner}
-                let unsignedKeys = accountKeys.filter {!$0.isSigner}
-                let accountKeys = signedKeys + unsignedKeys
-
+                let accountKeys = accountKeys.sorted()
                 // append data
                 data.append(keyCount)
                 for meta in accountKeys {
