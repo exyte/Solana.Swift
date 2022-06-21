@@ -11,7 +11,7 @@ extension Transaction {
         //        var instructions: [Transaction.Instruction]
         var programInstructions: [TransactionInstruction]
 
-        func serialize() -> Result<Data, Error> {
+        func serialize(type: SolanaTransactionType) -> Result<Data, Error> {
             // Construct data
             //            let bufferSize: Int =
             //                Header.LENGTH // header
@@ -25,7 +25,7 @@ extension Transaction {
 
             // Compiled instruction
             return encodeHeader().map { data.append($0) }
-                .flatMap { _ in return encodeAccountKeys().map { data.append($0) } }
+                .flatMap { _ in return encodeAccountKeys(type: type).map { data.append($0) } }
                 .flatMap { _ in return encodeRecentBlockhash().map { data.append($0) }}
                 .flatMap { _ in return encodeInstructions().map { data.append($0) }}
                 .map { data }
@@ -52,13 +52,13 @@ extension Transaction {
             return .success(Data(header.bytes))
         }
 
-        private func encodeAccountKeys() -> Result<Data, Error> {
+        private func encodeAccountKeys(type: SolanaTransactionType) -> Result<Data, Error> {
             // length
             return encodeLength(accountKeys.count).map { keyCount in
                 // construct data
                 var data = Data(capacity: keyCount.count + accountKeys.count * PublicKey.LENGTH)
                 // sort
-                let accountKeys = accountKeys.sorted()
+                let accountKeys = accountKeys.sorted(by: type.sorter)
                 // append data
                 data.append(keyCount)
                 for meta in accountKeys {

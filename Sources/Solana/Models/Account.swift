@@ -70,7 +70,7 @@ public struct Account: Codable, Hashable {
 }
 
 public extension Account {
-    public struct Meta: Decodable, CustomDebugStringConvertible, Comparable {
+    public struct Meta: Decodable, CustomDebugStringConvertible {
         public let publicKey: PublicKey
         public var isSigner: Bool
         public var isWritable: Bool
@@ -99,12 +99,6 @@ public extension Account {
 
         public var debugDescription: String {
             "{\"publicKey\": \"\(publicKey.base58EncodedString)\", \"isSigner\": \(isSigner), \"isWritable\": \(isWritable)}"
-        }
-
-        public static func < (lhs: Meta, rhs: Meta) -> Bool {
-            if lhs.isSigner != rhs.isSigner { return lhs.isSigner }
-            if lhs.isWritable != rhs.isWritable { return lhs.isWritable }
-            return lhs.publicKey < rhs.publicKey
         }
 
     }
