@@ -12,6 +12,7 @@ public class SolanaTransactionType {
     public static let nft = SolanaTransactionType { (x, y) -> Bool in
         if x.isSigner != y.isSigner { return x.isSigner }
         if x.isWritable != y.isWritable { return x.isWritable }
+        if x.isWritable && x.isSigner { return false }
         return x.publicKey < y.publicKey
     }
 
