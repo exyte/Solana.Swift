@@ -1,6 +1,27 @@
 import Foundation
 import TweetNacl
 
+public class SolanaTransactionType {
+
+	 public static let base = SolanaTransactionType { (x, y) -> Bool in
+		 if x.isSigner != y.isSigner { return x.isSigner }
+		 if x.isWritable != y.isWritable { return x.isWritable }
+		 return false
+	 }
+
+	 public static let nft = SolanaTransactionType { (x, y) -> Bool in
+		 if x.isSigner != y.isSigner { return x.isSigner }
+		 if x.isWritable != y.isWritable { return x.isWritable }
+		 return x.publicKey < y.publicKey
+	 }
+
+	 let sorter: (Account.Meta, Account.Meta) -> Bool
+
+	 private init(sorter: @escaping (Account.Meta, Account.Meta) -> Bool) {
+		 self.sorter = sorter
+	 }
+ }
+
 public struct Transaction {
     private static let SIGNATURE_LENGTH: Int = 64
     private static let DEFAULT_SIGNATURE = Data(capacity: 0)
@@ -10,13 +31,15 @@ public struct Transaction {
     private let recentBlockhash: String
 
     public private(set) var instructions = [TransactionInstruction]()
+	public var type: SolanaTransactionType
     //        TODO: nonceInfo
 
-    public init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String) {
+    public init(signatures: [Transaction.Signature] = [Signature](), feePayer: PublicKey, instructions: [TransactionInstruction] = [TransactionInstruction](), recentBlockhash: String, type: SolanaTransactionType = .base) {
         self.signatures = signatures
         self.feePayer = feePayer
         self.instructions = instructions
         self.recentBlockhash = recentBlockhash
+		self.type = type
     }
 
     // MARK: - Methods
@@ -63,7 +86,7 @@ public struct Transaction {
 
     mutating func serializeMessage() -> Result<Data, Error> {
         return compile()
-            .flatMap { $0.serialize() }
+            .flatMap { $0.serialize(type: type) }
     }
 
     mutating func verifySignatures() -> Result<Bool, Error> {
@@ -97,7 +120,7 @@ public struct Transaction {
     }
 
     private mutating func _partialSign(message: Message, signers: [Signer]) -> Result<Void, Error> {
-        message.serialize()
+        message.serialize(type: type)
             .flatMap { signData in
                 for signer in signers {
                     do {
@@ -177,7 +200,7 @@ public struct Transaction {
         }
 
         // sort accountMetas, first by signer, then by writable
-        accountMetas = Transaction.sortAccountMetas(accountMetas: accountMetas)
+		accountMetas.sort(by: type.sorter)
 
         // filterOut duplicate account metas, keeps writable one
         accountMetas = accountMetas.reduce([AccountMeta](), {result, accountMeta in
