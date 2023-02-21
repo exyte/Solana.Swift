@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: macos-12
+    runs-on: macos-11
 
     steps:
     - uses: actions/checkout@v2
@@ -17,6 +17,7 @@ jobs:
       run: swift build
     - name: Run tests
       run: swift test --enable-code-coverage
-      env:
-        DEVNET_VALIDATOR_URL: ${{ secrets.DEVNET_VALIDATOR_URL }}
-        DEVNET_VALIDATOR_WSS: ${{ secrets.DEVNET_VALIDATOR_WSS }}
+    - name: Test coverage
+      uses: maxep/spm-lcov-action@0.3.0
+      with:
+        output-file: ./coverage/lcov.info
