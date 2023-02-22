@@ -83,3 +83,9 @@ extension PublicKey: BorshCodable {
         self.bytes = byteArray
     }
 }
+
+extension PublicKey: Comparable {
+	public static func < (lhs: PublicKey, rhs: PublicKey) -> Bool {
+		 return lhs.description.lowercased() < rhs.description.lowercased()
+	 }
+ }

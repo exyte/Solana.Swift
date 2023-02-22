@@ -15,9 +15,9 @@ public class SolanaTransactionType {
 		 return x.publicKey < y.publicKey
 	 }
 
-	 let sorter: (Account.Meta, Account.Meta) -> Bool
+	 let sorter: (AccountMeta, AccountMeta) -> Bool
 
-	 private init(sorter: @escaping (Account.Meta, Account.Meta) -> Bool) {
+	 private init(sorter: @escaping (AccountMeta, AccountMeta) -> Bool) {
 		 self.sorter = sorter
 	 }
  }
