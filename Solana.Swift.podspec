@@ -19,6 +19,6 @@ Pod::Spec.new do |s|
   s.swift_versions   = ["5.3"]
 
   s.dependency 'TweetNacl', '~> 1.0.2'
-  s.dependency 'Starscream', '~> 4.0.0'
+  s.dependency 'Starscream', '4.0.4'
   s.dependency 'secp256k1.swift'
 end
