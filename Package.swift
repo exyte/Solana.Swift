@@ -29,7 +29,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SolanaTests",
-            dependencies: ["Solana", "TweetNacl", "Starscream", "secp256k1", "Beet"],
+            dependencies: ["SolanaExyteFork", "TweetNacl", "Starscream", "secp256k1", "Beet"],
             resources: [.copy("Resources/Mocks")]
         )
     ]
